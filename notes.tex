@@ -1,0 +1,661 @@
+1- the benefits of Next.js  (using app router , the old version use pages router)
+        1- server side rendering automatically
+        2- SEO (search engine optimization) => SEO is crucial for optimizing a website's visibility and ranking in search engine results
+                => increase organic traffic
+                =. enhanced user experience
+        3- Routing (next.js uses file-based routing system)
+                => the routing is handled by the file system
+                => use files for the routes 
+                (app)
+                    (blog) => https://localhost:3000/blog
+                    (about) => https://localhost:3000/about
+                    (profile) => https://localhost:3000/profile
+
+        4- FullStack applications (API Routes)
+            - enabling the creation of serverless functions to handle api requests
+            - serverless APIs in Next.js are a way of creating API endpoints without the need for a traditional server 
+                it allows us to build and deploy APIs:
+                        - without managing server infrastructure
+                        - worrying about scaling scaling their server as traffic increases
+            - you can use this feature , by creating (API endpoints) using file (route.js)
+                    (app)
+                        (blog) => route.js
+                        (about) => route.js
+                        (profile) => route.js
+
+        4- Automatic Code splitting :
+                => code splitting is a technique that breaks down large bundles of javascript code into smaller,
+                    more manageable chunks that can be loaded as needed
+                => this reduces the initial load time of a website and optimizes the user's experience while browsing
+                    - instead of using in react 
+                            const About = lazy(()=> import('./About'))
+                            const App = ()=> {
+                                return(
+                                    <Suspense fallback={<div> Loading ...</div>}
+                                        <About/>
+                                    </Suspense>
+                                )
+                            }
+                => But in Next.js this process is entirely Automatic
+                    it uses automatic code splitting by default to split pages into separate chunks
+
+======================= Routing    ==================
+
+2- page.js file which is responsible for starting page
+
+    => filenames Matter!!
+            next.js relies on reserved , special filenames
+            But the filenames only matter inside the app folder
+
+        => page.js => (localhost:3000/) Define page content, is the actual content, the starting page (localhost:3000/)
+        => layout.js => Define wrapper around all app or  pages (around one or more pages)
+        => not-found.js => Define "not Found" fallback page
+        => error.js => Define "error" fallback page
+        => loading.js => Fallback page which is shown whilst sibling or nested pages (or layouts) are fetching data
+        => route.js => Allows you to create an API route (i.e., a page which does NOT return JSX code but instead data, e.g., in the JSON format)
+
+
+3- you can navigate between pages using links
+        - However, using regular anchor elements (<a>) for navigation can cause the browser to reload the entire page,
+          which is not ideal for single-page applications.
+        - To maintain the single-page application behavior, Next.js provides a special Link component from next/link that you should use instead of anchor elements. 
+            This Link component ensures that navigation happens client-side, without a full page reload.
+        - When using the Link component, the content of the next page is still pre-rendered on the server,
+          but it is sent to the client and handled by client-side JavaScript code to update the UI, 
+
+    => we can't use <a> tag because it will reload the page 
+       we use Link from next/link instead
+        ex:
+            <a href="/about">About us</a>
+            => import Link from 'next/link'
+            <Link href="/about"> About us </Link>
+         
+
+4- globals.css: Contains CSS styles for the entire application.
+    import globals.css in layout.js file
+     It is imported into the layout.js file to make these styles available on every page.
+
+5- icon.png: Special file name used as a favicon for the website.
+    Adding an image called icon.png to the app folder automatically sets it as the favicon.
+
+    app folder => icon.png => icon for in the browser's tab next to the website's name
+
+6- components folder: Contains React components that are used across multiple pages.
+    These components are not automatically treated as pages by Next.js and can be used to organize your UI.
+
+    - To use these components: 
+        you can import them into your pages and render them as you would with any other React component.
+    - using the @ symbol  instead of (./) to refer to the root project folder in import paths
+        example: 
+                import component from './components/component'
+            use @ instead ./
+                import component from '@/components/component'
+
+        example: 
+            import Header from "@/components/header";
+            export default function Home() {
+                        return (
+                            <main>
+                            <Header />
+                            </main>
+                        )}
+
+7- dynamic route
+        Dynamic routes in Next.js provide a powerful way to create dynamic content based on the URL,
+        making it easier to build dynamic and flexible websites.
+
+       1- to make dynamic route :
+            - blog folder:   (/blog it will render pag.js)
+                    [slug] folder: (this is dynamic route and will render page.js in every dynamic route )
+                            page.js 
+                    page.js
+
+        2-    in blog => page.js =>  (localhost:3000/blog)
+                        <Link href="/blog/post-1">Post 1</Link>
+                        <Link href="/blog/post-2">Post 2</Link>
+            
+        3-    it will render in blog => [slug] => page.js => (localhost:3000/blog/post-1), (localhost:3000/blog/post-2)
+
+        4- you can access the dynamic route with 
+            = by extract the {params} and then use the dynamic route folder name 
+                like {params.slug}
+                
+                const BlogPostPage = ({ params }) => {
+                            return (
+                                <main>
+                                <h1>BlogPostPage</h1>
+                                <p>{params.slug}</p>
+                                </main>
+                            );
+                            };
+
+8- import images :
+        import logoImg from "@/assets/logo.png";
+        <img src={logoImg.src} alt="A plate" />
+
+9- app folder => layout.js : 
+        - It is responsible for rendering the main layout of the application, which includes the main header and the main content.
+        - layout : is a function component
+
+            import MainHeader from "@/components/main-header";
+            import "./globals.css";
+
+
+            export default function RootLayout({ children }) {
+                        return (
+                            <html lang="en">
+                            <body>
+                                <MainHeader />
+                                {children}
+                            </body>
+                            </html>
+                        );
+                        }
+
+          -  this is the main layout for all project 
+          -  you can import all components to add them to the layout
+
+
+10- using css modules with Next.js
+    1- global css import it  in layout.js (app =>layout.js) file 
+
+    2- css for components (main-header.js , main-header.module.css)
+        main-header.js:
+             => import classes from './main-header.module.css'
+               <Link  className={classes.logo} href="/" />
+
+11- working with images
+
+            <img src={logoImg.src} alt="A plate with food on it" />
+        
+    => instead of using the img tag , we can use the <Image> from next/image tag :
+
+            1-  imported from the "next/image" module  imported from the "next/image"
+                that provides optimized image loading and rendering
+
+                import Image from "next/image";
+
+            2- <Image src={logoImg} alt="A plate" priority fill />
+                The priority attribute: which tells Next.js to prioritize الاولويه ف التحميل the loading of this image.
+                This is useful for logos and other important images that should be displayed as soon as possible.
+                fill attribute : the image should fill the available space in the parent component if you don't width and height of that image
+
+
+12- using useState, useEffect with Next 14 
+    Error: You're importing a component that needs useState. It only works in a Client Component but none of its parents are marked with "use client", so they're Server Components by default.
+
+    1- Server Component: or (React Server Components (RSC))
+            React Server Components, are rendered on the server-side. In a NextJS project
+            by default, all React components are Server Components.
+            This means that the components are rendered on the server, and only the finished HTML code is sent to the client's browser. 
+            This approach improves performance by reducing the amount of client-side JavaScript code that needs to be downloaded. 
+            It also enhances search engine optimization, as web crawlers can see pages with complete content.
+
+           => hooks & handle user interactions are not available in server side
+
+            example: // Server Component
+                    export default function CourseList() {
+                        console.log("this component run on the server")
+                    return (
+                        <div>
+                        {/* content */}
+                        </div>
+                    );
+                     }
+
+    2- Client Components: 
+        Client Components are rendered on the client-side. In a NextJS project
+        They can contain code or use features that are only available in the client's browser, such as state hooks, event handlers, and the useEffect hook.
+    
+    3- Use of Client Components in NextJS ("use client") directive :
+            to unlock the ability to run client-side code, utilize client-side hooks like useState, and handle user interactions directly in the browser
+            developers can explicitly create Client Components by adding the useClient directive at the top of the file.
+            This allows for the use of client-side features like event handlers and state management.
+            "use client" //=> to unlock the ability to run client-side code, utilize client-side hooks like useState, and handle user interactions directly in the browser
+            This means that this part will be created, or rendered, directly in the web browser of the person using your website. useClient, you're saying that this part of your website should be a "Client Component." 
+
+            => components that are pre-rendered on the server but also on the client
+            => hooks & handle user interactions will be available in client side
+
+
+
+            example: // Client Component
+                
+                "use client"; //=> to unlock the ability to run client-side code, utilize client-side hooks like useState, and handle user interactions directly in the browser
+
+                export default function CourseList() {
+                    // Client-side code here
+                    // Event handlers, state hooks, etc.
+                    console.log("this component will run on the client-side because useClient we use it when working with Event handlers, state hooks,")
+
+                    return (
+                        <div>
+                        {/* Course list content */}
+                        </div>
+                    );
+                    }
+
+            example 2:
+                    // Client Component
+                    "use client"
+
+                    export default function MyComponent() {
+                    const [count, setCount] = useState(0);
+
+                    return (
+                        <div>
+                        <button onClick={() => setCount(count + 1)}>Click me</button>
+                        <p>Count: {count}</p>
+                        </div>
+                    );
+                    }
+
+
+13- working with nav links and paths
+    
+    1- to get path we use usePathname() from "next/navigation"
+
+            import { usePathname } from "next/navigation";
+            const path = usePathname();
+            use it like : className={
+                                path.startsWith("/meals")
+                                ? `${classes.link} ${classes.active}`
+                                : classes.link
+                            }
+            another ex : className={
+                                path.startsWith("/community")
+                                ? `${classes.link} ${classes.active}`
+                                : classes.link
+                            }
+
+    2- solve the error:
+        usePathname only works in Client Components. Add the "use client" directive at the top of the file to use it. 
+        add to the top of file "use client"
+
+        Example : 
+        
+                        "use client";
+
+                        import Link from "next/link";
+                        import { usePathname } from "next/navigation";
+                        import classes from "./nav-link.module.css";
+
+                        const NavLink = ({ href, children }) => {
+                        const path = usePathname();
+                        return (
+                            <Link
+                            href={href}
+                            className={
+                                path.startsWith(href)
+                                ? `${classes.link} ${classes.active}`
+                                : classes.link
+                            }
+                            >
+                            {children}
+                            </Link>
+                        );
+                        };
+
+                        export default NavLink;
+
+
+14- Sqlite Database
+    we use sqlite database because it can be used locally without need database server or any other complex setup
+
+    1- install : npm install better-sqlite3
+    2- add file : initdb.js
+    3- add file in folder lib: meals to connect with database and get all meals
+    4- get all meals and use it in app=> page.js 
+
+
+15-  how to improve the user experience of a webpage
+     by optimizing the loading process using NextJS
+
+        first    - app folder => (loading.js , loading.module.css) for loading 
+                    this file will render when fetching data it render automatically
+                    The current issue is that the loading text occupies the entire screen
+                    which isn't ideal because some parts of the page,
+                    like the header, don't depend on any loaded data and could be shown instantly.
+
+                Example: 
+                    inside app folder : create loading.js file 
+
+                        import classes from "./loading.module.css";
+
+                        const MealsLoadingPage = () => {
+                        return <p className={classes.loading}>Fetching meals...</p>;
+                        };
+
+                        export default MealsLoadingPage;
+
+
+      second  (or) => 
+                    A solution proposed is to separate the data fetching part into a different component,
+                    in this case, a component named 'Meals'.
+                    This component is responsible for fetching the data and returning the meals 
+                    The 'Meals' component is then wrapped with the 'Suspense' component provided by React.
+                    The 'Suspense' component allows handling of loading states and shows fallback content (like: <p>Loading...</p>) until the data has been loaded.
+                    loading.js (is no longer used. by using the 'Suspense' component)
+                    The loading.js file was doing the same thing as the 'Suspense' component, wrapping the page content with the 'Suspense' component and showing the loading content as a fallback.
+                    However, the manual approach using the 'Suspense' component provides more granular control over the loading states.
+
+            Example: 
+               1- import { Suspense } from 'react';
+
+               2- async function Meals() {
+                        const meals = await getMeals();
+                        return <MealsGrid meals={meals} />;
+                    }
+
+                3-  <Suspense fallback={<p className={classes.loading}>Fetching meals...</p>}>
+                            <Meals />
+                    </Suspense>
+
+16- Handling Errors in Next.js
+       1 => app folder => error.js file (to handle potential errors ) the file will render automatic when any error occur
+       2 => we must use "use client" in top of the file of error.js
+          for example if fetching data fails
+
+        ex:
+            "use client";
+            const error = ({ error }) => {
+            return (
+                <h1>404</h1>
+            );
+            };
+
+17- Invalid URL for (404 | page not found )
+        create a file : app folder => not-found.js file 
+            it will render automatically when the path or url is invalid and not found 
+
+18- The notFound() function is a built-in function provided by the next/navigation package in Next.js
+    It is used to handle 404 errors when a requested page or resource is not found.
+
+    Example:
+        import { notFound } from "next/navigation";
+
+        const meal = getMeal(params.mealSlug);
+
+        if (!meal) {
+            notFound();
+        }
+
+19- example with working with image files and pick one
+                    "use client";
+
+                    import Image from "next/image";
+                    import { useRef, useState } from "react";
+
+                    import classes from "./image-picker.module.css";
+
+                    export default function ImagePicker({ label, name }) {
+                    const [pickedImage, setPickedImage] = useState();
+                    const imgInput = useRef();
+
+                    function handlePickClick() {
+                        imgInput.current.click();
+                    }
+
+                    function handleImageChange(event) {
+                        const file = event.target.files[0];
+
+                        if (!file) {
+                            setPickedImage(null);
+                            return;
+                        }
+
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            // console.log(reader.result);
+                            setPickedImage(reader.result);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+
+                    return (
+                        <div className={classes.picker}>
+                        <label htmlFor={name}>{label}</label>
+                        <div className={classes.controls}>
+                            <div className={classes.preview}>
+                            {!pickedImage && <p>No image picked yet.</p>}
+                            {pickedImage && (
+                                <Image src={pickedImage} alt="The image selected by user." fill />
+                            )}
+                            </div>
+                            <input
+                            className={classes.input}
+                            type="file"
+                            id={name}
+                            accept="image/png, image/jpeg"
+                            name={name}
+                            ref={imgInput}
+                            onChange={handleImageChange}
+                            />
+                            <button className={classes.button} onClick={handlePickClick}>
+                            Pick an Image
+                            </button>
+                        </div>
+                        </div>
+                    );
+                    }
+
+
+20- Next.js, a popular framework for building React applications, offers an alternative approach for full-stack applications with both frontend and backend. By creating a Server Action,
+    you can handle form submissions more conveniently.
+    -This approach to handling form submissions using Server Actions in Next.js
+    -provides a powerful and convenient way to handle form submissions in a full stack application. 
+    -It ensures that form data is handled securely on the server, and makes it easy to collect and store form data.
+
+   1=> Form Submission in React:
+        In most React projects, form submissions are handled by adding an onSubmit prop to the form component
+        This prop is assigned a function that is executed when the form is submitted. 
+        This function typically prevents the default browser behavior, collects all the data from the form, and sends it to a backend.
+
+    2=> Full Stack Application: (using Next.js)
+        In the context of a full stack application, where you have both frontend and backend,
+        Next.js provides a more convenient pattern for handling form submissions. 
+        Instead of manually handling the form submission and data collection, you can create a function in the component that holds the form.
+        you can leverage Server Actions, which are functions that execute exclusively on the server.
+    
+    3=> Creating a Server Action:
+        In your React component containing the form, create a function (e.g., shareMeal) with the 'use server' directive.
+        This directive indicates that the function should be executed on the server, ensuring server-side rendering.
+        Mark the function as async to enable asynchronous operations.
+
+    4=> Assigning the Server Action: 
+        The Server Action function can be assigned as a value for the action prop on a form. 
+        When the form is submitted, Next.js will automatically create a request and send it to the Next.js server, triggering this function. 
+        This function will execute on the server, not on the client.
+
+    5=> Handling Form Data: 
+        The Server Action function will automatically receive the form data that was submitted. 
+        This data is collected in a formData object, using the formData class available in JavaScript. 
+        You can extract the data from this object using the get method, which allows you to get the value that was entered into a certain input field. 
+        The input field is identified by its name.
+
+    6=> Storing the Data: 
+        Once you have extracted all the necessary data from the form, the next step is to store this data. 
+        This could involve storing the data in a database, or storing an uploaded file on the file system and storing a path to that image in the database.
+
+    7=> Testing the Server Action: To test the Server Action, you can simply log the data to the console.
+         When you submit the form, you should see the form data logged in the terminal where you started the development server.
+
+          ----------------------------------------------------  
+    1- you can use this Server Actions feature to create such a function that will be triggered when a form is submitted.
+
+        => "use server" : (server action)
+            inside of a function is different because this creates a called Server Action that will be executed on the server.
+            "use server" inside function that only executes on a server not in the client and you must add async before that function 
+            like components by default are server components
+            but you can't use (Server Action) in a client component
+            - if you need to use it in a client component separate this function in single file and import it in the client component
+            - by default components in NextJs are Server Components but if you need to create Client component add in top of file "use client"
+
+            example: 
+                async function myAction (){
+                    'use server'
+                }
+
+            - why does this feature exist:
+                we use it to get the Form data and the data stored in formData automatically as a parameter for that function
+                to get the form data for specific input => formData.get('input name')
+                  ex:  title: formData.get("title"),
+                you must call this function to get the data inside the form tag by action attribute 
+
+                1- <form action="myAction">
+
+                2- async function myAction(formData){
+                        "use server"
+
+                        const data ={
+                            title: formData.get("title"),
+                            name: formData.get("name"),
+                            description: formData.get("description"),
+                            image: formData.get("image"),
+                        }
+                    }
+            
+
+
+21- install slugify & xss
+    npm install slugify xss 
+        slugify => Ahmed Basuoney (ahmed-basuoney)
+        xss => which will help us protect against cross-site scripting attacks.
+
+
+        import slugify from "slugify";
+        import xss from "xss";
+
+
+        export function saveMeal(meal) {
+        meal.slug = slugify(meal.title, {lower: true})
+        meal.instructions = xss(meal.instructions)
+        }
+
+22- storing Uploaded Images & Storing Data in the Database
+
+23- how to redirect user after submit form 
+
+        1-  import { redirect } from "next/navigation";
+        2-  redirect("/path"); 
+                ex: redirect("/meals");
+
+
+24- Form Status (pending & submitted)
+
+    you can use (useFormStatus() ) hook from 'react-dom'
+
+    but you need to add 'use client'
+    
+    Example: 
+
+        "use client";
+
+        import { useFormStatus } from "react-dom";
+        const MealsFromSubmit = () => {
+            const { pending } = useFormStatus();
+            return (
+                <button disabled={pending}>
+                    {pending ? "Submitting..." : "Share Meal"}
+                </button>
+            );
+        };
+
+25- inputs validation 
+    in action.js before sending the request to the server to save the data 
+    you can check if the inputs are valid 
+
+    =>
+            1-  ex: 
+            async function shareMeal(formData){
+                if(inputs valid ){
+                        throw new Error('invalid inputs')
+                }
+                await sendToServer(formData)
+            }
+
+            2- create an (Error.js file )page and put it inside fields folder like (share)
+                it will render automatically
+
+    3 => 
+        useFormState() hook from "react-dom"
+        import {useFormState} from 'react-dom'
+
+          const [currentState, formAction ] = useFormState(shareMeal, { message: null });
+
+          - currentState or current response the latest response return from the server action or the initial state which is {message: null}
+                that state depends on the execution action of the server and its response
+                currentState => which either could be (null or Invalid Inputs) from {message: null} and (from shareMeal) from sending and validation inputs in file action {message: 'invalid input'}
+          - fromAction => which is set as a value for the current from in action attribute (action={fromAction})
+            <form action={fromAction}></form>
+
+          {currentState.message && <p>{currentState.message}</p>}
+
+26- start the app in production Server (mode )
+    => npm run build 
+    => npm start 
+
+
+27- in production when user send the data to the server it will not works because the caching in Next.js 14
+    
+    - where you need to ensure that the cached data for a specific path is updated 
+        use after sending data function => 
+            revalidatePath('/path') => path you want to be updated
+            revalidatePath('/path') => it provides a way to clear cached data for specific paths in your application
+            revalidatePath('/meals', 'layout') // it accept second path (nested path) to update the cached data 
+                // it will update the cached data for the path and the nested path
+                (meals folder => page.js file, layout folder => (page.js file)) /meals => page.js , layout folder => page.js
+
+            - If you would want to revalidate (update the caching data) for all the pages 
+                of your entire website, you could, by the way, do that
+                by targeting slash and then setting the mode to layout.
+                revalidatePath('/', 'layout')
+
+            example : 
+              revalidatePath("/meals"); // it tells next.js to update the cached data for the path
+              revalidatePath('/meals', 'layout') // it accept second path to update the cached data 
+
+28- storing uploaded files (or any other files that are generated at runtime) on the local filesystem is not a great idea (development mode)
+    - because those files will simply not be available in the running NextJS applications. there are not available in (production mode)
+    - instead you store the uploaded files on cloud like AWS
+            => create an AWS account 
+            => create a S3 bucket (containers that can be used to store files )
+            => Upload the dummy image files like (public/ images)
+            => Configure the bucket for serving the images
+            => Allowing S3 as an image source
+            => Storing uploaded images on S3
+      
+29- Meta Data 
+    1=> (Static MetaData) in root layout.js file : (title on the tab of browser, and description for the Search engine result)
+        if you add this metadata to a layout, it will automatically be added to all the pages
+        unless a page specifies its own metadata.
+
+            export const metadata = {
+                title: "title for the entire website",
+                description: "description for the entire website",
+            }
+
+
+    2=> (Static MetaData) set specific metadata for some pages ( title and description for every single page)
+            in meals page 
+                    
+                export const metadata = {
+                    title: "All Meals",
+                    description: "Browse the meals, shared by a food-loving community.",
+                };
+
+    3=> (Dynamic metadata depends on the data of that page)
+        1- create a async function must called generateMetadata() Next.js will execute it automatic
+        2- this function will receives the same the data (props) of our page component receives 
+
+        export async function generateMetadata({meal}){
+            if(!meal){
+                notFount() // call notFound function 
+            }
+            return{
+                title: meal.title,
+                description: meal.description,
+            }
+        }   
+
+
