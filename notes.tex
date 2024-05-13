@@ -16,7 +16,7 @@
             - serverless APIs in Next.js are a way of creating API endpoints without the need for a traditional server 
                 it allows us to build and deploy APIs:
                         - without managing server infrastructure
-                        - worrying about scaling scaling their server as traffic increases
+                        - worrying about scaling their server as traffic increases
             - you can use this feature , by creating (API endpoints) using file (route.js)
                     (app)
                         (blog) => route.js
@@ -39,6 +39,11 @@
                 => But in Next.js this process is entirely Automatic
                     it uses automatic code splitting by default to split pages into separate chunks
 
+======================= starting    ==================
+npx create-next-app@latest
+
+
+
 ======================= Routing    ==================
 
 2- page.js file which is responsible for starting page
@@ -47,7 +52,7 @@
             next.js relies on reserved , special filenames
             But the filenames only matter inside the app folder
 
-        => page.js => (localhost:3000/) Define page content, is the actual content, the starting page (localhost:3000/)
+        => page.js => (localhost:3000/) Define page content, is the actual content, the starting page 
         => layout.js => Define wrapper around all app or  pages (around one or more pages)
         => not-found.js => Define "not Found" fallback page
         => error.js => Define "error" fallback page
@@ -129,9 +134,6 @@
                             );
                             };
 
-8- import images :
-        import logoImg from "@/assets/logo.png";
-        <img src={logoImg.src} alt="A plate" />
 
 9- app folder => layout.js : 
         - It is responsible for rendering the main layout of the application, which includes the main header and the main content.
@@ -165,6 +167,11 @@
                <Link  className={classes.logo} href="/" />
 
 11- working with images
+
+        8- import images :
+            import logoImg from "@/assets/logo.png";
+            <img src={logoImg.src} alt="A plate" />
+
 
             <img src={logoImg.src} alt="A plate with food on it" />
         
