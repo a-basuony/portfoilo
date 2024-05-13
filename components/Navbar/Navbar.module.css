@@ -139,6 +139,11 @@
   transition: 0.75s cubic-bezier(0.71, 0.01, 0.24, 0.99);
   transition-delay: 0.5s;
   z-index: 1;
+
+  background: url("../../public/images//bgWhite.png");
+  background-color: var(--bg-secondary);
+  background-size: cover;
+  background-repeat: repeat;
 }
 
 .navbar.active {

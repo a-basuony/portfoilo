@@ -5,7 +5,7 @@ import Link from "next/link";
 import classes from "./Navbar.module.css";
 
 const Navbar = () => {
-  // const [toggle, setToggle] = useState(false);
+  const [toggle, setToggle] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [theme, setTheme] = useState("dark_theme");
 
@@ -22,6 +22,7 @@ const Navbar = () => {
   };
 
   const toggleTheme = () => {
+    setToggle(!toggle);
     const newTheme = theme === "light_theme" ? "dark_theme" : "light_theme";
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
@@ -38,8 +39,8 @@ const Navbar = () => {
   }, [theme]);
 
   return (
-    <header className={classes.header} data-header>
-      <div className={classes.container}>
+    <header className={classes.header}>
+      <div className={`${classes.container} container`}>
         <h1 className={`${classes.logo} h1`}>
           <Link href="#">
             Ahmed<span>.</span>
@@ -47,17 +48,18 @@ const Navbar = () => {
         </h1>
 
         <div className={classes["navbar-actions"]}>
-          <select name="language" id="lang">
+          {/* <select name="language" id="lang">
             <option value="en">En</option>
             <option value="ar">Ar</option>
-          </select>
+          </select> */}
 
           <button
-            className={classes["theme-btn"]}
+            className={`${classes["theme-btn"]}  ${
+              toggle ? classes.active : ""
+            } `}
             aria-label="Change Theme"
             title="Change Theme"
             onClick={toggleTheme}
-            data-theme-btn
           >
             <span className={classes.icon}></span>
           </button>
@@ -70,17 +72,13 @@ const Navbar = () => {
           aria-label="Toggle Menu"
           title="Toggle Menu"
           onClick={toggleNavbar}
-          data-nav-toggle-btn
         >
           <span className={classes.one}></span>
           <span className={classes.two}></span>
           <span className={classes.three}></span>
         </button>
 
-        <nav
-          className={`${classes.navbar} ${isActive ? classes.active : ""}`}
-          data-navbar
-        >
+        <nav className={`${classes.navbar} ${isActive ? classes.active : ""}`}>
           <ul className={classes["navbar-list"]}>
             {["Home", "About", "Skills", "Portfolio", "Contact"].map(
               (link, index) => (
